@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from typing import List
 
 from ..database import get_db
-from ..models.game import Games, GameStatus
+from ..schemas import HistorySchema
+from ..models.game import Games, GameStatus, Positions
 
 router = APIRouter()
 
@@ -12,7 +14,7 @@ def start(db: Session = Depends(get_db)):
     """
     This endpoint start a new game session and returns its identifier.
     """
-    
+
     """
     This function starts a new game and returns its `id` as a unique game identifier\n
     
@@ -45,3 +47,8 @@ def check(game_id: int, db: Session = Depends(get_db)):
         return {"message": "in_progress"}
 
     return {"game": "finished", "winner": game_status.winner_parent.name}
+
+
+@router.get("/history", response_model=List[HistorySchema])
+def history(db: Session = Depends(get_db)):
+    return db.query(Games).all()

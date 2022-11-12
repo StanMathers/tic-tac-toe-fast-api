@@ -50,10 +50,11 @@ def check_for_tie(game_id: int, db: Session = Depends(get_db)) -> bool:
 
 @router.post("/move/{game_id}")
 def move(game_id: int, play_body: PositionsSchema, db: Session = Depends(get_db)):
+    # For docs
     """
     This endpoint receives a `game identifier` and a body request with `type` and `position` where `type` is X or O and `position` is a number from 0 to 8\n
     """
-    
+
     """
     This function receives a `game_id`, `type` and a `position` and returns a `status` of the game.\n
 
@@ -84,10 +85,10 @@ def move(game_id: int, play_body: PositionsSchema, db: Session = Depends(get_db)
 
     # If the chosen position is not in the database, then proceed
     if get_chosen_position is None:
-        position = Positions()
-        position.game_id = game_id
-        position.playerer_id = get_id_for_player
-        position.position = play_body.position
+
+        position = Positions(
+            game_id=game_id, playerer_id=get_id_for_player, position=play_body.position
+        )
 
         db.add(position)
         db.commit()
@@ -95,7 +96,7 @@ def move(game_id: int, play_body: PositionsSchema, db: Session = Depends(get_db)
 
         # Check if there is a winner and change game status
         data = db.query(Positions).filter(Positions.game_id == game_id).all()
-        
+
         if check_for_win_by_id(data, get_id_for_player):
             game_status = (
                 db.query(GameStatus).filter(GameStatus.game_id == game_id).first()
