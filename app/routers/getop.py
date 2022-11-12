@@ -36,7 +36,7 @@ def start(db: Session = Depends(get_db)):
 @router.get("/check/{game_id}")
 def check(game_id: int, db: Session = Depends(get_db)):
     """
-    This function checks the status of the game and returns the status of the game\n
+    This function checks the status of the game and returns the status of the game.\n
     """
     game_status = db.query(GameStatus).filter(GameStatus.game_id == game_id).first()
 
