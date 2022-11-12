@@ -4,7 +4,7 @@ from typing import List
 
 from ..database import get_db
 from ..schemas import HistorySchema
-from ..models.game import Games, GameStatus, Positions
+from ..models.game import Games, GameStatus
 
 router = APIRouter()
 
@@ -26,8 +26,7 @@ def start(db: Session = Depends(get_db)):
     db.commit()
     db.refresh(game)
 
-    game_status = GameStatus()
-    game_status.game_id = game.id
+    game_status = GameStatus(game.id)
     db.add(game_status)
     db.commit()
     db.refresh(game_status)

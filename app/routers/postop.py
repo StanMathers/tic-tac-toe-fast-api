@@ -30,7 +30,7 @@ def check_for_win_by_id(data: list, id: int) -> int:
             return id
 
 
-def check_for_tie(game_id: int, db: Session = Depends(get_db)) -> bool:
+def check_for_tie(game_id: int, db: Session = Depends(get_db)) -> None:
     """
     This function checks if there is a tie in the game.
 
@@ -43,9 +43,6 @@ def check_for_tie(game_id: int, db: Session = Depends(get_db)) -> bool:
         status.status_id = 2
         db.commit()
         db.refresh(status)
-        return True
-
-    return False
 
 
 @router.post("/move/{game_id}")

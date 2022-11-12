@@ -54,7 +54,9 @@ class GameStatus(Base):
 
     status_parent = relationship("Status")
     winner_parent = relationship("Player")
-
+    
+    def __init__(self, game_id: int) -> None:
+        self.game_id = game_id
 
 class Positions(Base):
     """
