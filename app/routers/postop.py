@@ -46,7 +46,12 @@ def check_for_tie(game_id: int, db: Session = Depends(get_db)) -> None:
 
 
 @router.post("/move/{game_id}")
-def move(game_id: int, play_body: PositionsSchema, response: Response, db: Session = Depends(get_db)):
+def move(
+    game_id: int,
+    play_body: PositionsSchema,
+    response: Response,
+    db: Session = Depends(get_db),
+):
     # For docs
     """
     This endpoint receives a `game identifier` and a body request with `type` and `position` where `type` is X or O and `position` is a number from 0 to 8\n
