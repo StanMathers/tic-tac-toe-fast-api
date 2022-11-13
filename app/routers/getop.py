@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -9,7 +9,7 @@ from ..models.game import Games, GameStatus
 router = APIRouter()
 
 
-@router.get("/start")
+@router.get("/start", status_code=status.HTTP_201_CREATED)
 def start(db: Session = Depends(get_db)):
     """
     This endpoint start a new game session and returns its identifier.
@@ -34,7 +34,7 @@ def start(db: Session = Depends(get_db)):
     return {"message": game.id}
 
 
-@router.get("/check/{game_id}")
+@router.get("/check/{game_id}", status_code=status.HTTP_201_CREATED)
 def check(game_id: int, db: Session = Depends(get_db)):
     """
     This function checks the status of the game and returns the status of the game.\n

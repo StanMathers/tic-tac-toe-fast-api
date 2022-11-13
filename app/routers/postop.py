@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.orm import Session
 
 from ..database import get_db
@@ -46,7 +46,7 @@ def check_for_tie(game_id: int, db: Session = Depends(get_db)) -> None:
 
 
 @router.post("/move/{game_id}")
-def move(game_id: int, play_body: PositionsSchema, db: Session = Depends(get_db)):
+def move(game_id: int, play_body: PositionsSchema, response: Response, db: Session = Depends(get_db)):
     # For docs
     """
     This endpoint receives a `game identifier` and a body request with `type` and `position` where `type` is X or O and `position` is a number from 0 to 8\n
@@ -78,6 +78,7 @@ def move(game_id: int, play_body: PositionsSchema, db: Session = Depends(get_db)
 
     # If game is finished, return that the game is finished and do not continue
     if get_game_status == "finished":
+        response.status_code = 400
         return {"message": "game is finished"}
 
     # If the chosen position is not in the database, then proceed
@@ -104,8 +105,9 @@ def move(game_id: int, play_body: PositionsSchema, db: Session = Depends(get_db)
             db.refresh(game_status)
 
         check_for_tie(game_id, db)
-
+        response.status_code = 201
         return {"message": "success"}
 
     # If the chosen position is already in the database, then return that the position is invalid
+    response.status_code = 400
     return {"result": "error", "error_code": "invalid_position"}
